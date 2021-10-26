@@ -17,11 +17,10 @@ public class _1096 {
         for(int i=0; i<board.length; i++) {
             for(int j=0; j<board[i].length; j++) {
                 if(i < n1 && j < n2) {
-                    System.out.print(((board[in[i][j]-1][in[i][j]-1])++) + " ");
+                    System.out.print((board[in[i][j]-1][in[i][j]-1] + 1) + " ");
                 } else {
                     System.out.print(board[i][j] + " ");
                 }
-
             }
             System.out.println();
         }
