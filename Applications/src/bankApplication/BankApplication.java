@@ -26,8 +26,8 @@ public class BankApplication {
             int selectNo = scanner.nextInt();
             switch(selectNo) {
                 case 1: createAccount(); break;
-                case 2: accountList();break;
-                case 3: deposit();  break;
+                case 2: accountList(); break;
+                case 3: deposit(); break;
                 case 4: withdraw(); break;
                 case 5: transfer(); break;
                 case 6:
@@ -44,7 +44,7 @@ public class BankApplication {
                     for(String s:printInfo)
                         fileWriter.write(s);
                     fileWriter.close();
-                    run=false;
+                    run = false;
                     break;
             }
         }
@@ -52,10 +52,10 @@ public class BankApplication {
     }
 
     private static void printMenu() {
-        System.out.println("------------------------------------------");
-        System.out.println("1.계좌생성 | 2.계좌목록 | 3.예금 | 4.출금 | 5.이체 | 6.이용내역 | 7.종료");
-        System.out.println("------------------------------------------");
-        System.out.println("선택>");
+        System.out.println("-------------------------------------------------------------------");
+        System.out.println("1.계좌생성 | 2.계좌목록 | 3.예금 | 4.출금 | 5.이체 | 6.이용내역조회 | 7.종료");
+        System.out.println("-------------------------------------------------------------------");
+        System.out.print("선택> ");
     }
 
     // 1. 계좌생성
@@ -90,7 +90,7 @@ public class BankApplication {
     // 계좌찾기
     private static Account findAccount(String ano) {
         for(int i=0;i<accountList.size();i++) {
-            Account account =accountList.get(i);//
+            Account account =accountList.get(i);
             if(account.getAno().equals(ano)) return account;
         }
         return null;
@@ -156,7 +156,7 @@ public class BankApplication {
         System.out.print("이체액>");
         int amount = scanner.nextInt();
 
-        if(findAccount(ano1)==null || findAccount(ano2)==null) {
+        if(findAccount(ano1) == null || findAccount(ano2) == null) {
             System.out.println("계좌번호를 확인하세요!!");
         }else {
             Account a1 = findAccount(ano1);

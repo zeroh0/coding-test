@@ -11,11 +11,11 @@ public class _1084 {
         for(int i=0; i<rgb[0]; i++) {
             for(int j=0; j<rgb[1]; j++) {
                 for(int k=0; k<rgb[2]; k++) {
-                    System.out.println(i + " " + j + " " + k);
+                    System.out.printf("%d %d %d\n", i, j, k);
                     cnt++;
                 }
             }
         }
-        System.out.println(cnt);
+        System.out.print(cnt);
     }
 }
