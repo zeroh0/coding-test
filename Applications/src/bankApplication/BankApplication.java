@@ -41,7 +41,7 @@ public class BankApplication {
                 case 2: accountList(); break;
                 case 3: deposit(); break;
                 case 4: withdraw(); break;
-                case 5: /*transfer()*/; break;
+                case 5: transfer(); break;
                 case 6:
                     System.out.println("준비 중입니다!");
                     /*
@@ -61,11 +61,13 @@ public class BankApplication {
                         fileWriter.write(s);
                     fileWriter.close();
                     */
-
-                    rs.close();
-                    pstmt.close();
-                    con.close();
-
+                    try {
+                        rs.close();
+                        pstmt.close();
+                        con.close();
+                    } catch (NullPointerException e) {
+                        run = false;
+                    }
                     run = false;
                     break;
             }
@@ -99,10 +101,10 @@ public class BankApplication {
 
         int resultCnt = pstmt.executeUpdate();
         if(resultCnt > 0) {
-            System.out.println("결과: 계좌가 생성되었습니다.");
+            System.out.println("결과: 계좌를 생성했습니다.");
             // printInfo.add();
         } else {
-            System.out.println("결과: 계좌 생성을 실패하였습니다.");
+            System.out.println("결과: 계좌 생성을 실패했습니다.");
         }
     }
 
@@ -112,7 +114,7 @@ public class BankApplication {
         System.out.println("계좌목록");
         System.out.println("------");
 
-        sql = "select * from ACCOUNT order by ANO";
+        sql = "select ANO, OWNER, BALANCE from ACCOUNT order by ANO";
         pstmt = con.prepareStatement(sql);
         rs = pstmt.executeQuery(sql);
         while(rs.next()) {
@@ -137,7 +139,7 @@ public class BankApplication {
 
             int resultCnt = pstmt.executeUpdate();
             if(resultCnt > 0) {
-                System.out.println("결과: 예금이 성공되었습니다.");
+                System.out.println("결과: 예금을 성공했습니다.");
                 // printInfo.add();
             } else {
                 System.out.println("결과: 예금을 실패했습니다.");
@@ -148,7 +150,7 @@ public class BankApplication {
     }
 
     // 4. 출금
-    private static void withdraw() throws SQLException {
+    private static void withdraw() {
         System.out.println("------");
         System.out.println("출금");
         System.out.println("------");
@@ -175,10 +177,10 @@ public class BankApplication {
 
                 int resultCnt = pstmt.executeUpdate();
                 if(resultCnt > 0) {
-                    System.out.println("결과: 예금이 성공되었습니다.");
+                    System.out.println("결과: 출금을 성공했습니다.");
                     // printInfo.add();
                 } else {
-                    System.out.println("결과: 예금을 실패했습니다.");
+                    System.out.println("결과: 출금을 실패했습니다.");
                 }
             } else {
                 System.out.println("결과: 잔고가 부족합니다.");
@@ -188,70 +190,61 @@ public class BankApplication {
         }
     }
 
-    /*
+
     // 5. 이체
-    private static void transfer() throws SQLException {
+    private static void transfer() {
         System.out.println("------");
         System.out.println("이체");
         System.out.println("------");
 
-        System.out.print("보내는 계좌번호>");
+        System.out.print("보내는 계좌번호> ");
         String ano1 = scanner.next();
-        System.out.print("받는 계좌번호>");
+        System.out.print("받는 계좌번호> ");
         String ano2 = scanner.next();
-        System.out.print("이체액>");
+        System.out.print("이체액> ");
         int amount = scanner.nextInt();
 
-
         try {
-            sql = "update ACCOUNT set BALANCE = ? where ANO = ?";
+            int balance1 = 0;
+            int balance2 = 0;
 
-        } catch (SQLException e) {
+            sql = "select BALANCE from ACCOUNT where ANO = ?" +
+                  " union all" +
+                  " select BALANCE from ACCOUNT where ANO = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, ano1);
+            pstmt.setString(2, ano2);
+            rs = pstmt.executeQuery();
+            rs.next();
+                balance1 = rs.getInt(1);
+            rs.next();
+                balance2 = rs.getInt(1);
 
-        }
-        sql = "select BALANCE from ACCOUNT where ANO = ?";
-        pstmt = con.prepareStatement(sql);
-        pstmt.setString(1, a1);
-        rs = pstmt.executeQuery();
-        rs.next();
-        int balance_a1 = rs.getInt(1);
+            if(balance1 - amount >= 0) {
+                balance1 -= amount;
+                balance2 += amount;
 
-        sql = "select BALANCE from ACCOUNT where ANO = ?";
-        pstmt = con.prepareStatement(sql);
-        pstmt.setString(1, a2);
-        rs = pstmt.executeQuery();
-        rs.next();
-        int balance_a2 = rs.getInt(1);
+                sql = "update ACCOUNT set BALANCE = ? where ANO = '"+ano1+"'";
+                pstmt = con.prepareStatement(sql);
+                pstmt.setInt(1, balance1);
+                int resultCnt1 = pstmt.executeUpdate();
 
-        if (balance_a1 - amount >= 0) {
-            balance_a1 -= amount;
-            balance_a2 += amount;
+                sql = "update ACCOUNT set BALANCE = ? where ANO = '"+ano2+"'";
+                pstmt = con.prepareStatement(sql);
+                pstmt.setInt(1, balance2);
+                int resultCnt2 = pstmt.executeUpdate();
 
-            String sql1 = "update ACCOUNT set BALANCE = ? where ANO = ?";
-            PreparedStatement pstmt1 = con.prepareStatement(sql);
-            pstmt1.setInt(1, balance_a1);
-            pstmt1.setString(2, a1);
-            int resultCnt_a1 = pstmt1.executeUpdate();
-
-            String sql2 = "update ACCOUNT set BALANCE = ? where ANO = ?";
-            PreparedStatement pstmt2 = con.prepareStatement(sql);
-            pstmt2.setInt(1, balance_a2);
-            pstmt2.setString(2, a2);
-            int resultCnt_a2 = pstmt2.executeUpdate();
-
-            if (resultCnt_a1 > 0 && resultCnt_a2 > 0) {
-                System.out.println("결과: 예금이 성공되었습니다.");
-                // printInfo.add("[출금] "+ df.format(today) +"\n계좌번호:" + ano + "\n출금액: " +amount + "원" + "\n잔액: " + acc.getBalance() + "원" + "\n\r");
-            } else {
-                System.out.println("결과: 예금을 실패했습니다.");
+                if(resultCnt1 > 0 && resultCnt2 > 0) {
+                    System.out.println("결과: 이체을 성공했습니다.");
+                    // printInfo.add();
+                } else {
+                    System.out.println("결과: 이체을 실패했습니다.");
+                }
             }
-            pstmt1.close();
-            pstmt2.close();
-
-        } else {
-            System.out.println("결과: 잔고가 부족합니다.");
+        } catch (SQLException e) {
+            System.out.println("결과: 계좌번호를 확인해주세요.");
+            e.printStackTrace();
         }
     }
-    */
 
 }

@@ -15,3 +15,19 @@ drop table account;
 truncate table ACCOUNT;
 
 commit;
+
+select ANO, OWNER, BALANCE from ACCOUNT
+where ANO = '111-001'
+
+union all
+
+select ANO, OWNER, BALANCE from ACCOUNT
+where ANO = '111-004'
+;
+
+update ACCOUNT set BALANCE = BALANCE - 10000
+where ANO = '111-001';
+
+select BALANCE from ACCOUNT where ANO = '111-005'
+union all
+select BALANCE from ACCOUNT where ANO = '111-006';
