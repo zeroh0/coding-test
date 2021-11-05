@@ -204,50 +204,43 @@ public class BankApplication {
             int balance1 = 0;
             int balance2 = 0;
 
-            /*
-            sql = "select BALANCE from ACCOUNT where ANO = ?" +
-                  " union all" +
-                  " select BALANCE from ACCOUNT where ANO = ?";
-            */
-            /*
-            이걸로 변경!!!
-            select sum(ano1), sum(ano2), sum(balance1), sum(balance2) from
-            (select count(*) ano1, 0 ano2, BALANCE balance1, 0 balance2 from ACCOUNT where ANO = '111-005' group by BALANCE
-            union all
-            select 0 ano1, count(*) ano2, 0 balance1, BALANCE balance2 from ACCOUNT where ANO = '111-006' group by BALANCE);
-            */
-            sql = "" +
-                    " (select count(*) ano1, sum(BALANCE) balance1 from ACCOUNT where ANO = ?" +
+            sql = "select sum(ano1), sum(ano2), sum(balance1), sum(balance2) from" +
+                    " (select count(*) ano1, 0 ano2, BALANCE balance1, 0 balance2 from ACCOUNT where ANO = ? group by BALANCE" +
                     " union all" +
-                    " select count(*) ano2, sum(BALANCE) balance2 from ACCOUNT where ANO = ?)";
+                    " select 0 ano1, count(*) ano2, 0 balance1, BALANCE balance2 from ACCOUNT where ANO = ? group by BALANCE)";
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, ano1);
             pstmt.setString(2, ano2);
             rs = pstmt.executeQuery();
-            rs.next();
-                balance1 = rs.getInt(1);
-            rs.next();
-                balance2 = rs.getInt(1);
 
-            if(balance1 - amount >= 0) {
-                balance1 -= amount;
-                balance2 += amount;
+            if(rs.next()) {
+                if(rs.getInt(1) == 1 && rs.getInt(2) == 1) {
+                    balance1 = rs.getInt(3);
+                    balance2  = rs.getInt(4);
 
-                sql = "update ACCOUNT set BALANCE = ? where ANO = '"+ano1+"'";
-                pstmt = con.prepareStatement(sql);
-                pstmt.setInt(1, balance1);
-                int resultCnt1 = pstmt.executeUpdate();
+                    if(balance1 - amount >= 0) {
+                        balance1 -= amount;
+                        balance2 += amount;
 
-                sql = "update ACCOUNT set BALANCE = ? where ANO = '"+ano2+"'";
-                pstmt = con.prepareStatement(sql);
-                pstmt.setInt(1, balance2);
-                int resultCnt2 = pstmt.executeUpdate();
+                        sql = "update ACCOUNT set BALANCE = ? where ANO = '"+ano1+"'";
+                        pstmt = con.prepareStatement(sql);
+                        pstmt.setInt(1, balance1);
+                        int resultCnt1 = pstmt.executeUpdate();
 
-                if(resultCnt1 > 0 && resultCnt2 > 0) {
-                    System.out.println("결과: 이체을 성공했습니다.");
-                    // printInfo.add();
-                } else {
-                    System.out.println("결과: 이체을 실패했습니다.");
+                        sql = "update ACCOUNT set BALANCE = ? where ANO = '"+ano2+"'";
+                        pstmt = con.prepareStatement(sql);
+                        pstmt.setInt(1, balance2);
+                        int resultCnt2 = pstmt.executeUpdate();
+
+                        if(resultCnt1 > 0 && resultCnt2 > 0) {
+                            System.out.println("결과: 이체을 성공했습니다.");
+                            // printInfo.add();
+                        } else {
+                            System.out.println("결과: 이체을 실패했습니다.");
+                        }
+                    } else {
+                        System.out.println("잔고가 부족합니다.");
+                    }
                 }
             }
         } catch (SQLException e) {
