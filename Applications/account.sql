@@ -28,6 +28,7 @@ where ANO = '111-004'
 update ACCOUNT set BALANCE = BALANCE - 10000
 where ANO = '111-001';
 
-select BALANCE from ACCOUNT where ANO = '111-005'
+select sum(ano1), sum(ano2), sum(balance1), sum(balance2) from
+(select count(*) ano1, 0 ano2, BALANCE balance1, 0 balance2 from ACCOUNT where ANO = '111-005' group by BALANCE
 union all
-select BALANCE from ACCOUNT where ANO = '111-006';
+select 0 ano1, count(*) ano2, 0 balance1, BALANCE balance2 from ACCOUNT where ANO = '111-006' group by BALANCE);

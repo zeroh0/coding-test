@@ -28,7 +28,7 @@ public class BankApplication {
     static ResultSet rs = null;
     static String sql = null;
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException, IOException {
         Class.forName("oracle.jdbc.driver.OracleDriver");
         con = DriverManager.getConnection(url, user, password);
 
@@ -44,7 +44,6 @@ public class BankApplication {
                 case 5: transfer(); break;
                 case 6:
                     System.out.println("준비 중입니다!");
-                    /*
                     BufferedReader reader = new BufferedReader(
                             new FileReader(myUrl, Charset.forName("UTF-8"))
                     );
@@ -52,15 +51,12 @@ public class BankApplication {
                     while((line = reader.readLine()) != null)
                         System.out.println(line);
                     reader.close();
-                    */
                     break;
                 case 7:
-                    /*
                     FileWriter fileWriter = new FileWriter(myUrl);
                     for(String s:printInfo)
                         fileWriter.write(s);
                     fileWriter.close();
-                    */
                     try {
                         rs.close();
                         pstmt.close();
@@ -208,9 +204,22 @@ public class BankApplication {
             int balance1 = 0;
             int balance2 = 0;
 
+            /*
             sql = "select BALANCE from ACCOUNT where ANO = ?" +
                   " union all" +
                   " select BALANCE from ACCOUNT where ANO = ?";
+            */
+            /*
+            이걸로 변경!!!
+            select sum(ano1), sum(ano2), sum(balance1), sum(balance2) from
+            (select count(*) ano1, 0 ano2, BALANCE balance1, 0 balance2 from ACCOUNT where ANO = '111-005' group by BALANCE
+            union all
+            select 0 ano1, count(*) ano2, 0 balance1, BALANCE balance2 from ACCOUNT where ANO = '111-006' group by BALANCE);
+            */
+            sql = "" +
+                    " (select count(*) ano1, sum(BALANCE) balance1 from ACCOUNT where ANO = ?" +
+                    " union all" +
+                    " select count(*) ano2, sum(BALANCE) balance2 from ACCOUNT where ANO = ?)";
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, ano1);
             pstmt.setString(2, ano2);
