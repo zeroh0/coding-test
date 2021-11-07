@@ -28,7 +28,7 @@ public class _2839 {
         int cnt = 0;
 
         if((n - 5) > 0) {
-            if(n % 3 == 0 && (n / 3) > (n / 5)) {
+            if(n % 3 == 0 && (n / 3) > (n / 5) && (n / 5) == 1) {
                 System.out.println(n / 3);
             } else {
                 while ((n - 5) > 0) {
