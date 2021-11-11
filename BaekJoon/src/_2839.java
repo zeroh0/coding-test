@@ -22,28 +22,7 @@ import java.util.Scanner;
 
 public class _2839 {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-
-        int cnt = 0;
-
-        if((n - 5) > 0) {
-            if((n % 3) == 0 && (n / 3) <= 3) {
-                System.out.println(n / 3);
-            }
-            else {
-                while(n >= 5) {
-                    n -= 5;
-                    cnt++;
-                    if((n % 3) == 0 && (n / 3) <= 3) {
-                        cnt += (n / 3);
-                        break;
-                    }
-                }
-                System.out.println(cnt);
-            }
-        } else {
-            System.out.println(-1);
-        }
+        // 설탕이 딱 나누어 지도록 하는 조건
+        // 그리디 알고리즘으로 최선의 선택
     }
 }
