@@ -27,15 +27,19 @@ public class _2839 {
         int cnt = 0;
 
         while (true) {
-            if((n/5) <= 0 || (n/3) <= 0) {
-                n -= 3;
-            } else {
-                n -= 5;
-            }
-            cnt += 1;
-            if(n<3 && n<5) {
+            if(n<5 || n<3) {
+                cnt = -1;
                 break;
             }
+            if((n%5)>=(n%3) && n > 10) {
+                n -= 5;
+                cnt += 1;
+            } else {
+                n -= 3;
+                cnt += 1;
+            }
+            if(n<5 && n<3)
+                break;
         }
         System.out.println(cnt);
 
