@@ -2,41 +2,46 @@ import java.util.Scanner;
 
 public class _1097 {
     public static void main(String[] args) {
-        //input
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
+
+        /* input */
+        /* 한 줄씩 바둑판 상황 입력 받기 */
         int[][] board = new int[19][19];
-        for(int i=0; i<board.length; i++)
-            for(int j=0; j<board[i].length; j++)
-                board[i][j] = scanner.nextInt();
-
-        int n = scanner.nextInt();
-
-        int[][] in = new int[n][2];
-        for(int i=0; i<in.length; i++)
-            for(int j=0; j<in[i].length; j++)
-                in[i][j] = scanner.nextInt();
-
-        //outputs
-        int x = 0, y = 0;
         for(int i=0; i<board.length; i++) {
-            for(int j=0; j<board[i].length; j++) {
-                if (i < 2) {
-                    x = in[i][0] - 1;
-                    y = in[i][1] - 1;
-                }
-                if (board[i][y] == 1) {
-                    board[i][y] = 5;
-                }
+            for (int j = 0; j < board[i].length; j++) {
+                board[i][j] = sc.nextInt();
+            }
+        }
 
-                if (board[x][j] == 1) {
-                    board[x][j] = 7;
+        /* 좌표 개수 입력받기 */
+        int n = sc.nextInt();
+
+        /* 좌표의 개수만큼 */
+        int[][] xy = new int[n][2];
+
+        for(int i=0; i<xy.length; i++) {
+            for (int j = 0; j < xy[i].length; j++) {
+                xy[i][j] = sc.nextInt();
+            }
+        }
+
+        for(int i=0; i<xy.length; i++) {
+            for (int j = 0; j < xy[i].length; j++) {
+                for(int x=0; x<board.length; x++) {
+                    if(board[xy[i][j]-1][x] == 0) board[xy[i][j]-1][x] = 1;
+                    else board[xy[i][j]-1][x] = 0;
+                }
+                for(int x=0; x<board.length; x++) {
+                    if(board[x][xy[i][j]-1] == 0) board[x][xy[i][j]-1] = 1;
+                    else board[x][xy[i][j]-1] = 0;
                 }
             }
         }
 
-        for(int a[]:board) {
-            for(int b:a) {
-                System.out.print(b + "  ");
+        /* output */
+        for(int i=0; i<board.length; i++) {
+            for (int j = 0; j<board[i].length; j++) {
+                System.out.print(board[i][j] + " ");
             }
             System.out.println();
         }
