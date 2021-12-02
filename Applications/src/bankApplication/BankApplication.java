@@ -43,6 +43,7 @@ public class BankApplication {
                 case 4: withdraw(); break;
                 case 5: transfer(); break;
                 case 6:
+                    /*
                     System.out.println("준비 중입니다!");
                     BufferedReader reader = new BufferedReader(
                             new FileReader(myUrl, Charset.forName("UTF-8"))
@@ -52,6 +53,7 @@ public class BankApplication {
                         System.out.println(line);
                     reader.close();
                     break;
+                    */
                 case 7:
                     FileWriter fileWriter = new FileWriter(myUrl);
                     for(String s:printInfo)
