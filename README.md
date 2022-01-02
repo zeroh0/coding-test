@@ -1,3 +1,3 @@
-# self-study
+# coding-test
 
-###### Coding Test!!
+###### 코드업 
